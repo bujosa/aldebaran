@@ -1,0 +1,8 @@
+Flask==1.1.4; python_version < '3.0'
+Flask==2.0.0; python_version > '3.0'
+Pymongo==1.0.0
+bs4==0.0.1
+requests==2.26.0
+google-cloud-pubsub==2.9.0
+Flask-WTF==1.0.0
+WTForms==3.0.0
