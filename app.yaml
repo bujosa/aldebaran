@@ -30,11 +30,12 @@ libraries:
 
 #[START env]
 env_variables:
-    PUBSUB_TOPIC: extract-meli-rd
     # This token is used to verify that requests originate from your
     # application. It can be any sufficiently random string.
-    PUBSUB_VERIFICATION_TOKEN: 1234abc
+    PUBSUB_VERIFICATION_TOKEN: open2020
     MONGO_DB_URI: mongodb+srv://scraper-admin:6PoJcLydol0XuLdX@freecluster.jg51j.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-yp5iu3-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true
     MONGO_DB_NAME: MELI_RD_V2
     MELI_ORIGIN: https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR
+    GOOGLE_CLOUD_PROJECT: curbo-dev
+    SUBSCRIPTION_NAME: projects/curbo-dev/subscriptions/extract-meli-rd-sub
     #[END env]
