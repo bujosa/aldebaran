@@ -18,14 +18,7 @@ handlers:
 - url: /
   script: main.app
 
-# libraries:
-# - name: flask
-#   version: "0.12"
-
-#[START env]
 env_variables:
-    # This token is used to verify that requests originate from your
-    # application. It can be any sufficiently random string.
     SECRET_KEY: open2020
     MONGO_DB_URI: mongodb+srv://scraper-admin:6PoJcLydol0XuLdX@freecluster.jg51j.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-yp5iu3-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true
     MONGO_DB_NAME: MELI_RD_V2
