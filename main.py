@@ -8,9 +8,6 @@ from flask import current_app, Flask, render_template, request
 from extract_functions.meli import __init__ as meli_init
 from googleapiclient.discovery import build
 
-
-# get_car_information("https://carro.mercadolibre.com.do/MRD-504456942-honda-crv-americana-_JM#position=2&search_layout=grid&type=item&tracking_id=d980975f-41a5-45c3-8c35-1045c5af0526")
-
 app = Flask(__name__)
 
 # Configure the following environment variables via app.yaml
@@ -62,7 +59,8 @@ def receive_messages_handler():
 
     MESSAGES.append(payload)
 
-    meli_init()
+    # Default days
+    meli_init(7)
 
     # Returning any 2xx status indicates successful receipt of the message.
     return 'OK', 200
