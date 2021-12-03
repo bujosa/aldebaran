@@ -1,32 +1,23 @@
-<!doctype html>
-<!--
- Copyright 2021 Google LLC
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
--->
+{% extends 'base.html' %}
 
-<html>
-<head>
-  <title>Mercado Libre</title>
-  {{/* <script src="{{ url_for('static', filename='script.js') }}"></script>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> */}}
-</head>
-<body>
+{% block content %}
+	<h1>Mercado Libre</h1>
 
-   <h1>Select your country:</h1>
+	 <h1> Time:</h1>
+    <p>{{ time }}</p>
 
-    <ul>
-    <li><a href="/form-rd"><img src="/images/do.png" width="120" height="80" alt="Bandera de Republica Dominicana"></a></li>
-    <li><a href="/form-co"><img src="/images/co.png" width="120" height="80" alt="Bandera de Dolombia"></a></li>
-    <li><a href="/form-mx"><img src="/images/mx.png" width="120" height="80" alt="Bandera de Mexico"></a></li>
-    </ul>
+    <br>
+    <h1>Select your country:</h1>
 
-</body>
-</html>
+    <div class="row">
+        <div class="column"><a href="{{ url_for('meli')}}"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/do.png" width="320" height="180" alt="Bandera de Republica Dominicana"></a></div>
+        <div class="column"><a href="/form-co"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/co.png" width="320" height="180" alt="Bandera de Dolombia"></a></div>
+        <div class="column"><a href="/form-mx"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/mx.png" width="320" height="180" alt="Bandera de Mexico"></div>
+    </div>
+ 
+
+	<br/><br/>
+	
+
+
+{% endblock %}
