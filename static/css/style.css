@@ -26,8 +26,7 @@ body {
 .column {
   float: left;
   width: 33.33%;
-  padding: 10px;
-  height: 300px; /* Should be removed. Only for demonstration */
+  padding: 5px;
 }
 
 /* Clear floats after the columns */
