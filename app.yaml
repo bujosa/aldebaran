@@ -9,7 +9,7 @@ handlers:
 env_variables:
     SECRET_KEY: open2020
     MONGO_DB_URI: mongodb+srv://scraper-admin:6PoJcLydol0XuLdX@freecluster.jg51j.mongodb.net/myFirstDatabase?authSource=admin&replicaSet=atlas-yp5iu3-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true
-    MONGO_DB_NAME: MELI_RD_V2
+    MONGO_DB_NAME: MELI_RD_V3
     MELI_ORIGIN: https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR
     GOOGLE_CLOUD_PROJECT: curbo-dev
     SUBSCRIPTION_NAME: projects/curbo-dev/subscriptions/extract-meli-rd-sub
