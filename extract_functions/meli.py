@@ -5,6 +5,7 @@ import math
 from datetime import datetime
 from datetime import timedelta
 import os
+import threading
 
 # Extract function from the extract_functions root
 from extract_functions.database.mongo import VehicleDataManager
@@ -124,7 +125,10 @@ def get_car_information(url):
     print(count)
     print(url)
 
-    VehicleDataManager().addCar(vehicle)
+    # VehicleDataManager().addCar(vehicle)
+    thread_sun_sun = threading.Thread(target=VehicleDataManager().addCar, args=[vehicle], daemon=True)
+    thread_sun_sun.start()
+    thread_sun_sun.join()
 
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
@@ -148,7 +152,9 @@ def get_car_url(key, value):
 
         for url in urls:
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            get_car_information(car_url)
+            thread_sun = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
+            thread_sun.start()
+            thread_sun.join()
 
 def get_year_url(soup):
     year_href = {}
@@ -179,6 +185,8 @@ def main(days):
     # Set variables
     global days_limit
     days_limit = days
+
+    print("Days ", days_limit)
 
     year_url_and_count = get_year_url(soup)
 
