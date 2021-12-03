@@ -7,7 +7,8 @@ class VehicleDataManager():
     def __init__(self): 
             self.connection = pymongo.MongoClient(os.environ['MONGO_DB_URI'])
             db = self.connection[os.environ['MONGO_DB_NAME']]
-            self.collection = db[datetime.today().strftime('%Y-%m-%d')]
+            collection_name=datetime.today().strftime('%Y-%m-%d')
+            self.collection = db[collection_name]
 
     def addCar(self, vehicleObject):
         self.collection.insert_one(vehicleObject)
