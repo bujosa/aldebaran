@@ -184,3 +184,5 @@ def main(days):
 
     for key in year_url_and_count:
         get_car_url(key, year_url_and_count[key])
+    
+    print("Total of cars: " + str(count))
