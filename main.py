@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 @app.route('/')
 def index():
-    return render_template('index.html', time=datetime.datetime.now())
+    return render_template('index.html', time=datetime.today().strftime('%Y-%m-%d'))
 
 @app.route('/form-rd', methods=['GET', 'POST'])
 def meli():
