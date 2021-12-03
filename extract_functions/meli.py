@@ -152,9 +152,7 @@ def get_car_url(key, value):
 
         for url in urls:
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            thread_sun = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
-            thread_sun.start()
-            thread_sun.join()
+            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
 
 def get_year_url(soup):
     year_href = {}
@@ -182,15 +180,11 @@ def get_year_url(soup):
 
 # Main Function
 def main(days):
-    # Set variables
     global days_limit
     days_limit = days
-
-    print("Days ", days_limit)
 
     year_url_and_count = get_year_url(soup)
 
     for key in year_url_and_count:
         get_car_url(key, year_url_and_count[key])
     
-    print("Total of cars: " + str(count))
