@@ -5,8 +5,6 @@ from flask import Flask, render_template, redirect, url_for
 from extract_functions.meli import main
 from webforms import FormMeli
 
-
-
 credentials_path = './configuration.json'
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
 
