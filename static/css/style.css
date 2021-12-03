@@ -1,7 +1,13 @@
 h1 {
-	color: rgb(17, 97, 65);
+	color: #07C8E8;
 	font-size:50px;
 }
+
+h2 {
+	color: #5dbdce;
+	font-size:20px;
+}
+
 
 body {
 	background: #000000;
