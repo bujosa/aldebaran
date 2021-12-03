@@ -175,7 +175,7 @@ def get_year_url(soup):
     return year_href
 
 # Main Function
-def __init__(days):
+def main(days):
     # Set variables
     global days_limit
     days_limit = days
