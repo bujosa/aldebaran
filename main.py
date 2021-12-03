@@ -22,17 +22,21 @@ def index():
     return render_template('index.html')
 
 @app.route('/form-rd', methods=['GET', 'POST'])
-def meli():
+async def meli():
     form = FormMeli()
     if form.validate_on_submit():
         if form.secret.data != os.environ['SECRET_KEY']:
             flash("Wrong Secret - Try Again!", "error")
+            
         else:
-            flash("Scrawling... Data will be available in a few hours")
+            flash("Scrawling... Data will be available in a few hours", "message")
+
             thread = Thread(target=main(int(form.days.data)))
             thread.daemon = True
             thread.start()
-            flash("Finish Scraping")
+
+            flash("Finish Scraping", "message")
+
             return redirect(url_for('index'))            
     return render_template('meli.html', form=form)    
         
