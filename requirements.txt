@@ -4,3 +4,4 @@ bs4==0.0.1
 requests==2.26.0
 google-cloud-pubsub==2.9.0
 flask-wtf==1.0.0
+dnspython==2.1.0
