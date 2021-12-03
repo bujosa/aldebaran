@@ -4,18 +4,15 @@
 	
     <h1>Select your country:</h1>
 
-    <marquee direction="right">
     <div class="row">
         <div class="column"><a href="{{ url_for('meli')}}"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/do.png" width="320" height="180" alt="Bandera de Republica Dominicana"></a></div>
         <div class="column"><a href="/form-co"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/co.png" width="320" height="180" alt="Bandera de Dolombia"></a></div>
         <div class="column"><a href="/form-mx"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/mx.png" width="320" height="180" alt="Bandera de Mexico"></div>
     </div>
-    </marquee>
 
 	<br/><br/>
 	
-    <h1> Time:</h1> <h2>{{ time }}</h2>
+    <h1> Time:</h1> 
+    <h2>{{ time }}</h2>
     
-
-
 {% endblock %}
