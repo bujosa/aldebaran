@@ -1,83 +1,39 @@
-# [START app]
-import base64
-import json
-import logging
 import os
+from flask.helpers import flash
+from google.cloud import pubsub_v1
+from flask import Flask, render_template, redirect, url_for
+from extract_functions.meli import main
+import datetime
+from webforms import FormMeli
 
-from flask import current_app, Flask, render_template, request
-from extract_functions.meli import __init__ as meli_init
-from googleapiclient.discovery import build
+
+
+credentials_path = './configuration.json'
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
+
+subscriber = pubsub_v1.SubscriberClient()
+subscription_path = os.environ['SUBSCRIPTION_NAME']
+
+streaming_pull_future = subscriber.subscribe(subscription_path, callback=main)
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
-# Configure the following environment variables via app.yaml
-# This is used in the push request handler to verify that the request came from
-# pubsub and originated from a trusted source.
-app.config['PUBSUB_VERIFICATION_TOKEN'] = \
-    os.environ['PUBSUB_VERIFICATION_TOKEN']
-app.config['PUBSUB_TOPIC'] = os.environ['PUBSUB_TOPIC']
-app.config['GOOGLE_CLOUD_PROJECT'] = os.environ['GOOGLE_CLOUD_PROJECT']
-
-
-# Global list to storage messages received by this instance.
-MESSAGES = []
-
-
-# [START index]
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    if request.method == 'GET':
-        return render_template('index.html', messages=MESSAGES)
+    return render_template('index.html', time=datetime.datetime.now())
 
-    data = request.form.get('payload', 'Example payload').encode('utf-8')
+@app.route('/form-rd', methods=['GET', 'POST'])
+def meli():
+    form = FormMeli()
+    if form.validate_on_submit():
+        if form.secret != os.environ['SECRET_KEY']:
+            flash("Wrong Secret - Try Again!", "error")
+        else:
+            flash("Scrawling... Data will be available in a few hours")
+            main(int(form.days))
+            flash("Finish Scraping")
+            return redirect(url_for('index'))            
+    return render_template('meli.html', form=form)    
+        
 
-    service = build('pubsub', 'v1')
-    topic_path = 'projects/{project_id}/topics/{topic}'.format(
-        project_id=app.config['GOOGLE_CLOUD_PROJECT'],
-        topic=app.config['PUBSUB_TOPIC']
-    )
-    service.projects().topics().publish(
-        topic=topic_path, body={
-          "messages": [{
-              "data": base64.b64encode(data)
-          }]
-        }).execute()
-
-    return 'OK', 200
-# [END index]
-
-
-# [START push]
-@app.route('/_ah/push-handlers/receive_messages', methods=['POST'])
-def receive_messages_handler():
-    if (request.args.get('token', '') !=
-            current_app.config['PUBSUB_VERIFICATION_TOKEN']):
-        return 'Invalid request', 400
-
-    envelope = json.loads(request.get_data().decode('utf-8'))
-    payload = base64.b64decode(envelope['message']['data'])
-
-    MESSAGES.append(payload)
-
-    # Default days
-    meli_init(7)
-
-    # Returning any 2xx status indicates successful receipt of the message.
-    return 'OK', 200
-# [END push]
-
-
-@app.errorhandler(500)
-def server_error(e):
-    logging.exception('An error occurred during a request.')
-    return """
-    An internal error occurred: <pre>{}</pre>
-    See logs for full stacktrace.
-    """.format(e), 500
-
-
-if __name__ == '__main__':
-    # This is used when running locally. Gunicorn is used to run the
-    # application on Google App Engine. See entrypoint in app.yaml.
-    app.run(host='127.0.0.1', port=8080, debug=True)
-# [END app]
