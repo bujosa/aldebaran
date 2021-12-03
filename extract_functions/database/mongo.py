@@ -1,6 +1,7 @@
 import pymongo
 from datetime import datetime
 import os
+import dns
 
 #Vehicle data manager class
 class VehicleDataManager():
