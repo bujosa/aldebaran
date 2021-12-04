@@ -7,7 +7,7 @@ from datetime import timedelta
 import threading
 
 # Extract function from the extract_functions root
-from extract_functions.database.mongo_dom import VehicleDataManager
+from extract_functions.database.mongo_dom import VehicleDataManagerDom
 from extract_functions.utils.utilities import convert_url, data_sheet, days_section, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section, state_section
 
 # Request to mercado mercado libre RD
@@ -125,7 +125,7 @@ def get_car_information(url):
     print(url)
 
     # VehicleDataManager().addCar(vehicle)
-    thread_sun_sun = threading.Thread(target=VehicleDataManager().addCar, args=[vehicle], daemon=True)
+    thread_sun_sun = threading.Thread(target=VehicleDataManagerDom().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
 
