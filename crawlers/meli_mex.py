@@ -9,7 +9,7 @@ from shared.utilities import data_sheet, days_section, get_array_of_url, get_con
 import threading
 
 # Request to mercado mercado libre mx
-response = requests.get("https://autos.mercadolibre.com.mx/distrito-federal/trato-directo/_FiltersAvailableSidebar?filter=BRAND")
+response = requests.get("https://autos.mercadolibre.com.mx/distrito-federal/trato-directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
@@ -102,9 +102,9 @@ def get_car_information(url):
 
 # Get car url
 def get_car_url(key, value):
-    brand_specific_urls = get_array_of_url(key, value)
+    year_specific_urls = get_array_of_url(key, value)
 
-    for specific_page in brand_specific_urls:
+    for specific_page in year_specific_urls:
         response = requests.get(specific_page)
         car_page = response.text
         soup = BeautifulSoup(car_page, "html.parser")
