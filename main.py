@@ -3,8 +3,8 @@ import threading
 from flask.helpers import flash
 from google.cloud import pubsub_v1
 from flask import Flask, render_template, redirect, url_for
-from extract_functions.meli_dom import maindom
-from extract_functions.meli_mex import mainmex
+from crawlers.meli_dom import maindom
+from crawlers.meli_mex import mainmex
 from webforms import FormMeli
 
 credentials_path = './configuration.json'
