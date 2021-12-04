@@ -5,7 +5,7 @@ from datetime import datetime
 from datetime import timedelta
 import threading
 from database.mongo_dom import VehicleDataManagerDom
-from extract_functions.utils.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section, state_section
+from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section, state_section
 
 # Request to mercado mercado libre RD
 response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR')
