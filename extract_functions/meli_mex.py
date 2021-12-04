@@ -4,7 +4,7 @@ import math
 from datetime import datetime
 from datetime import timedelta
 from extract_functions.database.mongo_mex import VehicleDataManagerMex
-from extract_functions.utils.utilities import data_sheet, days_section, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section_mex, state_section
+from extract_functions.utils.utilities import convert_url, data_sheet, days_section, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section_mex, state_section
 import threading
 
 # Request to mercado mercado libre mx
@@ -17,6 +17,8 @@ max_vehicle_per_page = 48
 limit_car_per_brand = 1969
 
 count = 0
+
+count_url = 0
 
 days_limit = 7
 
@@ -49,7 +51,7 @@ def get_car_information(url):
     
     pictures, len_pictures = get_gallery_pictures(soup)
 
-    if len_pictures < 4:
+    if len_pictures < 4 or len(pictures) < 4:
         return
 
     replace_text = "Imagen 1 de " + str(len_pictures) + " de "
@@ -158,6 +160,9 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
+            global count_url
+            count_url += 1
+            print("Veces que me itero: " + str(count_url))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
             threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
             
