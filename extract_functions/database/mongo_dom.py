@@ -1,10 +1,9 @@
 import pymongo
 from datetime import datetime
 import os
-import dns
 
 #Vehicle data manager class
-class VehicleDataManager():
+class VehicleDataManagerDom():
     def __init__(self): 
             self.connection = pymongo.MongoClient(os.environ['MONGO_DB_URI'])
             db = self.connection['MELI_RD_V3']
