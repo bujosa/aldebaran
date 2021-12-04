@@ -3,7 +3,8 @@ import threading
 from flask.helpers import flash
 from google.cloud import pubsub_v1
 from flask import Flask, render_template, redirect, url_for
-from extract_functions.meli_dom import main
+from extract_functions.meli_dom import maindom
+from extract_functions.meli_mex import mainmex
 from webforms import FormMeli
 
 credentials_path = './configuration.json'
@@ -12,7 +13,8 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
 subscriber = pubsub_v1.SubscriberClient()
 subscription_path = os.environ['SUBSCRIPTION_NAME']
 
-streaming_pull_future = subscriber.subscribe(subscription_path, callback=main)
+# TODO: Create callback function for messages
+streaming_pull_future = subscriber.subscribe(subscription_path, callback=maindom)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
@@ -21,19 +23,29 @@ app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 def index():
     return render_template('index.html')
 
-@app.route('/form-rd', methods=['GET', 'POST'])
-def meli():
+@app.route('/form-dom', methods=['GET', 'POST'])
+def melidom():
     form = FormMeli()
     if form.validate_on_submit():
         if form.secret.data != os.environ['SECRET_KEY']:
             flash("Wrong Secret - Try Again!", "error")
 
         else:
-            flash("Scrawling... Data will be available in a few hours", "message")
-            
-            threading.Thread(target=main, args=[int(form.days.data)]).start()
+            threading.Thread(target=maindom, args=[int(form.days.data)]).start()
 
             return redirect(url_for('index'))            
     return render_template('meli.html', form=form)    
-        
+
+@app.route('/form-mex', methods=['GET', 'POST'])
+def melimex():
+    form = FormMeli()
+    if form.validate_on_submit():
+        if form.secret.data != os.environ['SECRET_KEY']:
+            flash("Wrong Secret - Try Again!", "error")
+
+        else:
+            threading.Thread(target=mainmex, args=[int(form.days.data)]).start()
+
+            return redirect(url_for('index'))            
+    return render_template('meli.html', form=form)   
 
