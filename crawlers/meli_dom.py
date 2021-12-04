@@ -1,12 +1,12 @@
-#Packages
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 from datetime import timedelta
 import threading
 from database.mongo_dom import VehicleDataManagerDom
+from shared.picture.picture import get_gallery_pictures
 from shared.seller.seller import get_seller, get_seller_type
-from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_gallery_pictures, get_model, key_error, price_section, state_section
+from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, price_section_dop, state_section
 
 # Request to mercado mercado libre RD
 response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR')
@@ -14,63 +14,54 @@ mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
 count = 0
-
 count_url = 0
-
 days_limit = 7
 
+# Get car information
 def get_car_information(url):
     response = requests.get(url)
     vehicle_detail_page = response.text
     soup = BeautifulSoup(vehicle_detail_page, "html.parser")
 
     picture_section = soup.find("img", class_="ui-pdp-image ui-pdp-gallery__figure__image")
-
     if picture_section == None:
         return
     
     pictures, len_pictures = get_gallery_pictures(soup)
-
     if len_pictures < 4 or len(pictures) < 4:
         return
 
     replace_text = "Imagen 1 de " + str(len_pictures) + " de "
     
     title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
-
     if title == None:
         return
     
     brand = title.split(" ")[0]
 
-    price, currency = price_section(soup)
-
+    price, currency = price_section_dop(soup)
     if price == None:
         return
 
     days = days_section(soup)
-    
     if days > days_limit:
         return
 
     sellerType = get_seller_type(soup)
-
     if sellerType != 'Particular':
         return
 
     data_sheet_table = data_sheet(soup)
 
+    # vehicle brand and model validation
     model = get_model(data_sheet_table, title, brand)
-
     if key_error(data_sheet_table, "brand") != None:
         brand = key_error(data_sheet_table, "brand")
-     
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-
-    # vehicle brand and model validation
     if brand == None or model == None:
         return
+    # end of vehicle brand and model validation
 
     vehicle = {
        "title":title, 
@@ -103,11 +94,11 @@ def get_car_information(url):
     print(count)
     print(url)
 
-    # VehicleDataManager().addCar(vehicle)
     thread_sun_sun = threading.Thread(target=VehicleDataManagerDom().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
 
+# Extract vehicle url 
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
 

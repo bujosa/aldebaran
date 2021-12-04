@@ -3,8 +3,9 @@ import requests
 from datetime import datetime
 from datetime import timedelta
 from database.mongo_mex import VehicleDataManagerMex
+from shared.picture.picture import get_gallery_pictures
 from shared.seller.seller import get_seller, get_seller_type
-from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_gallery_pictures, get_model, key_error, price_section_mex, state_section
+from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, price_section_mex, state_section
 import threading
 
 # Request to mercado mercado libre mx
@@ -13,12 +14,10 @@ mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
 count = 0
-
 count_url = 0
-
 days_limit = 7
 
-
+# Get car information
 def get_car_information(url):
     response = requests.get(url)
     vehicle_detail_page = response.text
@@ -26,35 +25,34 @@ def get_car_information(url):
 
     # picture_section validation
     picture_section = soup.find("img", class_="ui-pdp-image ui-pdp-gallery__figure__image")
-
     if picture_section == None:
         return
-    
-    pictures, len_pictures = get_gallery_pictures(soup)
+    # end picture_section validation
 
+    # pictures validation section
+    pictures, len_pictures = get_gallery_pictures(soup)
     if len_pictures < 4 or len(pictures) < 4:
         return
-
-    replace_text = "Imagen 1 de " + str(len_pictures) + " de "
-    
-    title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
-
-    brand = title.split(" ")[0]
+    # end pictures validation section
 
     # price_section validation
     price = price_section_mex(soup)
-
     if price == None:
         return
+    # end price_section validation
 
     # days_section validation
     days = days_section(soup)
-
     if days > days_limit:
       return
+    # end days_section validation
 
     data_sheet_table = data_sheet(soup)
     
+    # brand and model validation
+    replace_text = "Imagen 1 de " + str(len_pictures) + " de "
+    title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
+    brand = title.split(" ")[0]
     model = get_model(data_sheet_table, title, brand)
 
     if key_error(data_sheet_table, "brand") != None:
@@ -62,10 +60,10 @@ def get_car_information(url):
      
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-
-     # vehicle brand and model validation
+    
     if brand == None or model == None:
         return
+    # end brand and model validation
 
     vehicle = {
        "title":title, 
@@ -102,6 +100,7 @@ def get_car_information(url):
     thread_sun_sun.start()
     thread_sun_sun.join()
 
+# Get car url
 def get_car_url(key, value):
     brand_specific_urls = get_array_of_url(key, value)
 
