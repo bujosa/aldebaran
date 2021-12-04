@@ -54,13 +54,10 @@ def get_car_information(url):
     title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
     brand = title.split(" ")[0]
     model = get_model(data_sheet_table, title, brand)
-
     if key_error(data_sheet_table, "brand") != None:
             brand = key_error(data_sheet_table, "brand")
-     
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-    
     if brand == None or model == None:
         return
     # end brand and model validation
