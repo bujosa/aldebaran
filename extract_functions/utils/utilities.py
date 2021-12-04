@@ -71,6 +71,15 @@ def price_section(soup):
 
     return price, currency
 
+def price_section_mex(soup):
+    price_section = soup.find("span", class_="price-tag-fraction")
+
+    if price_section == None:
+        return None
+
+    price = int(price_section.text.replace(",",""))
+    return price
+
 # This function is used to get the state of the car
 def state_section(soup):
     try: 
