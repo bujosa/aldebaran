@@ -3,7 +3,7 @@ import threading
 from flask.helpers import flash
 from google.cloud import pubsub_v1
 from flask import Flask, render_template, redirect, url_for
-from extract_functions.meli import main
+from extract_functions.meli_dom import main
 from webforms import FormMeli
 
 credentials_path = './configuration.json'
