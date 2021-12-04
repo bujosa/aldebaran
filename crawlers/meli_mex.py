@@ -96,8 +96,6 @@ def get_car_information(url):
     thread_sun_sun = threading.Thread(target=VehicleDataManagerMex().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
-    
-    requests.get("https://curbo-dev.uc.r.appspot.com/")
 
 
 # Get car url
@@ -126,9 +124,9 @@ def get_car_url(key, value):
             count_url += 1
             print("Veces que me itero: " + str(count_url))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            thread_son = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
-            thread_son.start()
-            thread_son.join()
+            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            # thread_son.start()
+            # thread_son.join()
             
 # Main Function
 def mainmex(days):
