@@ -1,5 +1,11 @@
+import math
+
 #Common fields
 fields = { "year":"Año", "brand": "Marca", "model": "Modelo", "fuelType": "Tipo de combustible", "transmission": "Transmisión", "bodyStyle": "Tipo de carrocería",  "doors":"Puertas",  "engine": "Motor",  "mileage": "Kilómetros", "color": "Color", "dólares": "USD" , "pesos": "DOP"}
+
+# Constants variables
+limit_car_per_config = 1969
+max_vehicle_per_page = 48
 
 # This function is used to extract the uri
 def convert_url(url):
@@ -90,6 +96,45 @@ def state_section(soup):
                 return seller_info_status.find("p", class_="ui-seller-info__status-info__subtitle").text.split(" - ")[1]
     except:
         return ''
+
+def get_array_of_url(url, value):
+    array_of_url = []
+    last_part = "_Desde_"
+    array_of_url.append(url)
+    count = value/max_vehicle_per_page
+
+    if count < 1 or value == max_vehicle_per_page: 
+        return array_of_url
+    else:
+        count = math.floor(count)
+        for x in range(count+1):
+            number = str(x*max_vehicle_per_page + 1)
+            last_part_tmp = url+last_part+number
+            array_of_url.append(last_part_tmp)
+    
+    return array_of_url
+
+def get_config_url(soup):
+    config_href = {}
+
+    try: 
+        config_div = soup.find(class_="ui-search-search-modal-grid-columns").find_all("a", class_="ui-search-search-modal-filter ui-search-link")
+    except:
+        return config_href
+
+    for config in config_div:
+        key = config.get("href")
+        value_tmp = config.find("span", class_="ui-search-search-modal-filter-match-count").text
+        value = int(value_tmp.replace("(","").replace(")","").replace(",",""))
+        
+        url = convert_url(key)
+
+        if value > limit_car_per_config:
+            value = limit_car_per_config
+
+        config_href[url] = value
+
+    return config_href
 
 # This function is used to get pictures from the gallery and get the number of pictures
 def get_gallery_pictures(soup):
