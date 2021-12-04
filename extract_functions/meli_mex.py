@@ -1,10 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
-import math
 from datetime import datetime
 from datetime import timedelta
 from extract_functions.database.mongo_mex import VehicleDataManagerMex
-from extract_functions.utils.utilities import convert_url, data_sheet, days_section, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section_mex, state_section
+from extract_functions.utils.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section_mex, state_section
 import threading
 
 # Request to mercado mercado libre mx
@@ -12,31 +11,12 @@ response = requests.get("https://autos.mercadolibre.com.mx/distrito-federal/trat
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-# Constants variables
-max_vehicle_per_page = 48
-limit_car_per_brand = 1969
-
 count = 0
 
 count_url = 0
 
 days_limit = 7
 
-def get_brand_url(soup):
-    brand_href = {}
-    brand_div = soup.find(class_="ui-search-search-modal-grid-columns").find_all("a", class_="ui-search-search-modal-filter ui-search-link")
-    for brand in brand_div:
-        key = brand.get("href")
-        value_tmp = brand.find("span", class_="ui-search-search-modal-filter-match-count").text
-        value = int(value_tmp.replace("(","").replace(")","").replace(",",""))
-
-        url = convert_url(key)
-
-        if value > limit_car_per_brand:
-            value = limit_car_per_brand
-        brand_href[url] = value
-
-    return brand_href
 
 def get_car_information(url):
     response = requests.get(url)
@@ -117,27 +97,9 @@ def get_car_information(url):
     print(count)
     print(url)
 
-    # VehicleDataManagerMex().addCar(vehicle)
     thread_sun_sun = threading.Thread(target=VehicleDataManagerMex().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
-
-def get_array_of_url(url, value):
-    brand_url = []
-    last_part = "_Desde_"
-    brand_url.append(url)
-    count = value/max_vehicle_per_page
-
-    if count < 1 or value == max_vehicle_per_page: 
-        return brand_url
-    else:
-        count = math.floor(count)
-        for x in range(count+1):
-            number = str(x*max_vehicle_per_page + 1)
-            last_part_tmp = url+last_part+number
-            brand_url.append(last_part_tmp)
-    
-    return brand_url
 
 def get_car_url(key, value):
     brand_specific_urls = get_array_of_url(key, value)
@@ -164,15 +126,17 @@ def get_car_url(key, value):
             count_url += 1
             print("Veces que me itero: " + str(count_url))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            thread_son = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
+            thread_son.start()
+            thread_son.join()
             
 # Main Function
 def mainmex(days):
     global days_limit
     days_limit = days
 
-    brand_url_and_count = get_brand_url(soup)
+    config_url_and_count = get_config_url(soup)
 
-    for key in brand_url_and_count:
-        get_car_url(key, brand_url_and_count[key])
+    for key in config_url_and_count:
+        get_car_url(key, config_url_and_count[key])
     
