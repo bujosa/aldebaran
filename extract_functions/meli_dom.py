@@ -4,15 +4,14 @@ import requests
 import math
 from datetime import datetime
 from datetime import timedelta
-import os
 import threading
 
 # Extract function from the extract_functions root
-from extract_functions.database.mongo import VehicleDataManager
+from extract_functions.database.mongo_dom import VehicleDataManager
 from extract_functions.utils.utilities import convert_url, data_sheet, days_section, get_gallery_pictures, get_model, get_seller, get_seller_type, key_error, price_section, state_section
 
 # Request to mercado mercado libre RD
-response = requests.get(os.environ['MELI_ORIGIN'])
+response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR')
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
@@ -179,7 +178,7 @@ def get_year_url(soup):
     return year_href
 
 # Main Function
-def main(days):
+def maindom(days):
     global days_limit
     days_limit = days
 
