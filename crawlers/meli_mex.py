@@ -92,10 +92,13 @@ def get_car_information(url):
     count += 1
     print(count)
     print(url)
-
+    
     thread_sun_sun = threading.Thread(target=VehicleDataManagerMex().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
+    
+    requests.get("https://curbo-dev.uc.r.appspot.com/")
+
 
 # Get car url
 def get_car_url(key, value):
