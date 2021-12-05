@@ -124,7 +124,12 @@ def get_car_url(key, value):
             count_url += 1
             print("Veces que me itero: " + str(count_url))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            if (count_url % 3 == 0):
+                thread_son = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
+                thread_son.start()
+                thread_son.join()
+            else:
+                threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
             # thread_son.start()
             # thread_son.join()
             
@@ -136,5 +141,8 @@ def mainmex(days):
     config_url_and_count = get_config_url(soup)
 
     for key in config_url_and_count:
+        # thread_father = threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]], daemon=True )
+        # thread_father.start()
+        # thread_father.join()
         get_car_url(key, config_url_and_count[key])
     
