@@ -58,7 +58,7 @@ def melicop():
         if form.secret.data != os.environ['SECRET_KEY']:
             flash("Wrong Secret - Try Again!", "error")
         else:
-            threading.Thread(target=maincop, args=[int(form.days.data)], daemon=True).start()
+            threading.Thread(target=maincop, args=[int(form.days.data)]).start()
             return redirect(url_for('index'))           
              
     return render_template('meli.html', form=form)   

@@ -9,6 +9,7 @@ from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
 import threading
 import time
+import logging
 
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
@@ -99,9 +100,10 @@ def get_car_information(url):
     print(count)
     print(url)
     
-    thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle], daemon=True)
+    thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle])
     thread_sun_sun.start()
     thread_sun_sun.join()
+    thread_sun_sun.is_alive()
 
 # Get car url
 def get_car_url(key, value):
@@ -131,14 +133,15 @@ def get_car_url(key, value):
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
             
             try:
-             threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+                threading.Thread(target=get_car_information, args=[car_url]).start()
             except:
                 print("Error")
                 continue
-
-            while(threading.active_count() > 8):
+            
+            # print("Threading active_count", threading.active_count())
+            while(threading.active_count() > 80):
                 print("Waiting for the workers to finish")
-                time.sleep(3) 
+                time.sleep(5) 
 
             # thread_sun_sun.start()
             # thread_sun_sun.join()
