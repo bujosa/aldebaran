@@ -4,8 +4,9 @@ from datetime import datetime
 from datetime import timedelta
 from database.mongo_mex import VehicleDataManagerMex
 from shared.picture.picture import get_gallery_pictures
+from shared.prices.price import price_section_mex
 from shared.seller.seller import get_seller, get_seller_type
-from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, price_section_mex, state_section
+from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
 import threading
 
 # Request to mercado mercado libre mx

@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 from datetime import timedelta
-from database.mongo_mex import VehicleDataManagerMex
+from database.mongo_cop import VehicleDataManagerCop
 from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
@@ -15,8 +15,9 @@ mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
 count = 0
-count_url = 0
+global_count = 0
 days_limit = 7
+total_vehicles = 0
 
 # Get car information
 def get_car_information(url):
@@ -94,7 +95,7 @@ def get_car_information(url):
     print(count)
     print(url)
     
-    thread_sun_sun = threading.Thread(target=VehicleDataManagerMex().addCar, args=[vehicle], daemon=True)
+    thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
 
@@ -121,21 +122,24 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            global count_url
-            count_url += 1
-            print("Veces que me itero: " + str(count_url))
+            global global_count
+            global_count += 1
+            print("Veces que me itero: " + str(global_count))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
-            thread_sun_sun.start()
-            thread_sun_sun.join()
+            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            # thread_sun_sun.start()
+            # thread_sun_sun.join()
             
 # Main Function
 def maincop(days):
     global days_limit
     days_limit = days
+    global total_vehicles
 
-    config_url_and_count = get_config_url(soup)
+    config_url_and_count, total_vehicles = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
     
+    while(global_count < total_vehicles):
+        print("")
