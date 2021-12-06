@@ -134,7 +134,7 @@ def mainmex(days):
     global days_limit
     days_limit = days
 
-    config_url_and_count = get_config_url(soup)
+    config_url_and_count, total_vehicles = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
