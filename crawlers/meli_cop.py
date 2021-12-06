@@ -8,6 +8,7 @@ from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
 import threading
+import time
 
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
@@ -60,7 +61,7 @@ def get_car_information(url):
             brand = key_error(data_sheet_table, "brand")
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-    if brand == None or model == None:
+    if brand == None or model == None or model == "":
         return
     # end brand and model validation
 
@@ -90,6 +91,9 @@ def get_car_information(url):
        "postCreatedAt":  (datetime.now() - timedelta(days=days)).isoformat(),
     }
 
+    if vehicle["year"] == None:
+        return
+
     global count
     count += 1
     print(count)
@@ -98,7 +102,6 @@ def get_car_information(url):
     thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle], daemon=True)
     thread_sun_sun.start()
     thread_sun_sun.join()
-
 
 # Get car url
 def get_car_url(key, value):
@@ -126,7 +129,17 @@ def get_car_url(key, value):
             global_count += 1
             print("Veces que me itero: " + str(global_count))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-            threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            
+            try:
+             threading.Thread(target=get_car_information, args=[car_url], daemon=True).start()
+            except:
+                print("Error")
+                continue
+
+            while(threading.active_count() > 8):
+                print("Waiting for the workers to finish")
+                time.sleep(3) 
+
             # thread_sun_sun.start()
             # thread_sun_sun.join()
             
@@ -138,8 +151,9 @@ def maincop(days):
 
     config_url_and_count, total_vehicles = get_config_url(soup)
 
+    print("Total de vehiculos: ", total_vehicles)
+
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
     
-    while(global_count < total_vehicles):
-        print("")
+    
