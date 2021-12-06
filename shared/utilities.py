@@ -54,38 +54,6 @@ def key_error(data, key):
     except:
         return None
         
-# This function is used to get the price of the car and the currency
-def price_section_dop(soup):
-    price_section = soup.find("span", class_="price-tag-text-sr-only")
-
-    if price_section == None:
-        return None
-    
-    keys = price_section.text.split(" ")
-    
-    price = int(keys[0])
-    currency = get_key(keys[1])
-    
-    if price > 200 and price < 999:
-        return price*1000, "DOP"
-
-    if price < 2000: 
-        return None, None
-
-    if price < 100000 and currency == "DOP": 
-        currency =  "USD"
-
-    return price, currency
-
-def price_section_mex(soup):
-    price_section = soup.find("span", class_="price-tag-fraction")
-
-    if price_section == None:
-        return None
-
-    price = int(price_section.text.replace(",",""))
-    return price
-
 # This function is used to get the state of the car
 def state_section(soup):
     try: 
