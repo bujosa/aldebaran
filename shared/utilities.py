@@ -101,8 +101,9 @@ def get_config_url(soup):
             value = limit_car_per_config
 
         config_href[url] = value
-
-    return config_href
+        total_vehicles = value
+        
+    return config_href, total_vehicles
 
 def get_key(key):
     return fields[key]
