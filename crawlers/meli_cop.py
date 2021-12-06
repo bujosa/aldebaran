@@ -4,8 +4,9 @@ from datetime import datetime
 from datetime import timedelta
 from database.mongo_mex import VehicleDataManagerMex
 from shared.picture.picture import get_gallery_pictures
+from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
-from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, price_section_mex, state_section
+from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
 import threading
 
 # Request to mercado mercado libre co
@@ -36,7 +37,7 @@ def get_car_information(url):
     # end pictures validation section
 
     # price_section validation
-    price = price_section_mex(soup)
+    price = price_section_cop(soup)
     if price == None:
         return
     # end price_section validation
@@ -68,7 +69,7 @@ def get_car_information(url):
        "model":model,
        "price": price*0.95, 
        "originalPrice": price,
-       "currency": 'MXN',
+       "currency": 'COP',
        "mainPicture": pictures[0],
        "pictures": pictures[1:],
        "year": key_error(data_sheet_table, "year"),
@@ -80,7 +81,7 @@ def get_car_information(url):
        "mileage": key_error(data_sheet_table, "mileage"),
        "color": key_error(data_sheet_table, "color"),
        "vehicle_url": url,
-       "country": "Mexico",
+       "country": "Colombia",
        "state": state_section(soup),
        "seller": get_seller(soup),
        "sellerType": get_seller_type(soup),
