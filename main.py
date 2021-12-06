@@ -49,4 +49,18 @@ def melimex():
              
     return render_template('meli.html', form=form)   
 
+@app.route('/form-mex', methods=['GET', 'POST'])
+def melicop():
+    form = FormMeli()
+
+    if form.validate_on_submit():
+        if form.secret.data != os.environ['SECRET_KEY']:
+            flash("Wrong Secret - Try Again!", "error")
+        else:
+            threading.Thread(target=mainmex, args=[int(form.days.data)], daemon=True).start()
+            return redirect(url_for('index'))           
+             
+    return render_template('meli.html', form=form)   
+
+
 
