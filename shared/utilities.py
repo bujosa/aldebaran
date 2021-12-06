@@ -82,6 +82,7 @@ def get_array_of_url(url, value):
     
     return array_of_url
 
+#Extract total pages and vehicles
 def get_config_url(soup):
     config_href = {}
 
@@ -102,7 +103,7 @@ def get_config_url(soup):
 
         config_href[url] = value
         total_vehicles = value
-        
+
     return config_href, total_vehicles
 
 def get_key(key):
