@@ -3,6 +3,7 @@ import threading
 from flask.helpers import flash
 from google.cloud import pubsub_v1
 from flask import Flask, render_template, redirect, url_for
+from crawlers.meli_cop import maincop
 from crawlers.meli_dom import maindom
 from crawlers.meli_mex import mainmex
 from webforms import FormMeli
@@ -49,7 +50,7 @@ def melimex():
              
     return render_template('meli.html', form=form)   
 
-@app.route('/form-mex', methods=['GET', 'POST'])
+@app.route('/form-cop', methods=['GET', 'POST'])
 def melicop():
     form = FormMeli()
 
@@ -57,7 +58,7 @@ def melicop():
         if form.secret.data != os.environ['SECRET_KEY']:
             flash("Wrong Secret - Try Again!", "error")
         else:
-            threading.Thread(target=mainmex, args=[int(form.days.data)], daemon=True).start()
+            threading.Thread(target=maincop, args=[int(form.days.data)], daemon=True).start()
             return redirect(url_for('index'))           
              
     return render_template('meli.html', form=form)   
