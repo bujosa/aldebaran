@@ -13,4 +13,4 @@ class VehicleDataManagerCop():
 
     def addCar(self, vehicleObject):
         self.collection.insert_one(vehicleObject)
-        threading.current_thread().is_alive()
+        
