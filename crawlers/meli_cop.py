@@ -11,6 +11,9 @@ import threading
 import time
 import logging
 
+# Set Logging
+logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s')
+
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
 mercadoLibre = response.text
@@ -95,16 +98,14 @@ def get_car_information(url):
     if vehicle["year"] == None:
         return
 
-    global count
-    count += 1
-    print(count)
-    print(url)
+    # global count
+    # count += 1
+    # print(count)
     
     thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle])
     thread_sun_sun.start()
     thread_sun_sun.join()
-    thread_sun_sun.is_alive()
-
+    
 # Get car url
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
@@ -129,34 +130,37 @@ def get_car_url(key, value):
         for url in urls:
             global global_count
             global_count += 1
+
             print("Veces que me itero: " + str(global_count))
+
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-            
-            try:
-                threading.Thread(target=get_car_information, args=[car_url]).start()
-            except:
-                print("Error")
-                continue
+        
+            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url])
+           
             
             # print("Threading active_count", threading.active_count())
-            while(threading.active_count() > 80):
-                print("Waiting for the workers to finish")
-                time.sleep(5) 
+            # while(threading.active_count() > 80):
+            #     print("Waiting for the workers to finish")
+            #     time.sleep(5) 
 
-            # thread_sun_sun.start()
-            # thread_sun_sun.join()
-            
+            thread_sun_sun.start()
+            thread_sun_sun.join(15)
+
+    # threading.current_thread().is_alive()
+
 # Main Function
 def maincop(days):
     global days_limit
     days_limit = days
     global total_vehicles
-
     config_url_and_count, total_vehicles = get_config_url(soup)
 
-    print("Total de vehiculos: ", total_vehicles)
-
     for key in config_url_and_count:
-        get_car_url(key, config_url_and_count[key])
-    
+        thread_son = threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]])
+        thread_son.start()
+        thread_son.join()
+        
+    # while(threading.active_count() > 80):
+    #             print("Waiting for the workers to finish")
+    #             time.sleep(5) 
     
