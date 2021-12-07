@@ -105,6 +105,7 @@ def get_car_information(url):
     thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle])
     thread_sun_sun.start()
     thread_sun_sun.join()
+    thread_sun_sun.is_alive()
     
 # Get car url
 def get_car_url(key, value):
@@ -135,7 +136,7 @@ def get_car_url(key, value):
 
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
         
-            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url])
+            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url]).start()
            
             
             # print("Threading active_count", threading.active_count())
@@ -143,8 +144,8 @@ def get_car_url(key, value):
             #     print("Waiting for the workers to finish")
             #     time.sleep(5) 
 
-            thread_sun_sun.start()
-            thread_sun_sun.join(15)
+            # thread_sun_sun.start()
+            # thread_sun_sun.join(15)
 
     # threading.current_thread().is_alive()
 
@@ -159,6 +160,7 @@ def maincop(days):
         thread_son = threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]])
         thread_son.start()
         thread_son.join()
+        thread_son.is_alive()
         
     # while(threading.active_count() > 80):
     #             print("Waiting for the workers to finish")
