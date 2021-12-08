@@ -85,7 +85,6 @@ def get_array_of_url(url, value):
 #Extract total pages and vehicles
 def get_config_url(soup):
     config_href = {}
-    total_vehicles = 0 
 
     try: 
         config_div = soup.find(class_="ui-search-search-modal-grid-columns").find_all("a", class_="ui-search-search-modal-filter ui-search-link")
@@ -103,9 +102,8 @@ def get_config_url(soup):
             value = limit_car_per_config
 
         config_href[url] = value
-        total_vehicles += value
 
-    return config_href, total_vehicles
+    return config_href
 
 def get_key(key):
     return fields[key]
