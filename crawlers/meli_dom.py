@@ -14,9 +14,7 @@ response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_Fi
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-global_count = 0
 days_limit = 7
-total_vehicles = 0
 
 # Create ThreadPoolExecutor
 workers = ThreadPoolExecutor(max_workers=16)
@@ -59,11 +57,14 @@ def get_car_information(url):
 
     # vehicle brand and model validation
     model = get_model(data_sheet_table, title, brand)
+
     if key_error(data_sheet_table, "brand") != None:
         brand = key_error(data_sheet_table, "brand")
+
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-    if brand == None or model == None:
+
+    if brand == None or model == None or model == "":
         return
     # end of vehicle brand and model validation
 
@@ -93,6 +94,9 @@ def get_car_information(url):
        "postCreatedAt":  (datetime.now() - timedelta(days=days)).isoformat(),
     }
 
+    if vehicle["year"] == None:
+        return
+
     # Insert vehicle in database
     VehicleDataManagerDom().addCar(vehicle)
     
@@ -119,11 +123,6 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            global global_count
-            global_count += 1
-
-            print("Veces que me itero: " + str(global_count))
-
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
             workers.submit(get_car_information, car_url)
 
@@ -131,9 +130,8 @@ def get_car_url(key, value):
 def maindom(days):
     global days_limit
     days_limit = days
-    global total_vehicles
 
-    config_url_and_count, total_vehicles = get_config_url(soup)
+    config_url_and_count = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
