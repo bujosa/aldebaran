@@ -7,18 +7,17 @@ from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
-import logging
+# import logging
 from concurrent.futures import ThreadPoolExecutor
 
 # Set Logging
-logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s')
+# logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s')
 
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-count = 0
 global_count = 0
 days_limit = 7
 total_vehicles = 0
@@ -102,7 +101,6 @@ def get_car_information(url):
 
     VehicleDataManagerCop().addCar(vehicle)
 
-    
 # Get car url
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
@@ -134,17 +132,6 @@ def get_car_url(key, value):
 
             workers.submit(get_car_information, car_url)
 
-            # thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url]).start()
-           
-            # print("Threading active_count", threading.active_count())
-            # while(threading.active_count() > 80):
-            #     print("Waiting for the workers to finish")
-            #     time.sleep(5) 
-
-            # thread_sun_sun.start()
-            # thread_sun_sun.join(15)
-
-    # threading.current_thread().is_alive()
 
 # Main Function
 def maincop(days):
@@ -155,8 +142,8 @@ def maincop(days):
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
-        # threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]])
         
+    print("Yo me ejecuto al final del todo")
     # while(threading.active_count() > 80):
     #             print("Waiting for the workers to finish")
     #             time.sleep(5) 
