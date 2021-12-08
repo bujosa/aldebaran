@@ -7,16 +7,17 @@ from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_mex
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
-import threading
+from concurrent.futures import ThreadPoolExecutor
 
 # Request to mercado mercado libre mx
 response = requests.get("https://autos.mercadolibre.com.mx/distrito-federal/trato-directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-count = 0
-count_url = 0
 days_limit = 7
+
+# Create ThreadPoolExecutor
+workers = ThreadPoolExecutor(max_workers=8)
 
 # Get car information
 def get_car_information(url):
@@ -53,13 +54,17 @@ def get_car_information(url):
     # brand and model validation
     replace_text = "Imagen 1 de " + str(len_pictures) + " de "
     title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
+
     brand = title.split(" ")[0]
     model = get_model(data_sheet_table, title, brand)
+
     if key_error(data_sheet_table, "brand") != None:
             brand = key_error(data_sheet_table, "brand")
+
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
-    if brand == None or model == None:
+
+    if brand == None or model == None or model == "":
         return
     # end brand and model validation
 
@@ -89,15 +94,12 @@ def get_car_information(url):
        "postCreatedAt":  (datetime.now() - timedelta(days=days)).isoformat(),
     }
 
-    global count
-    count += 1
-    print(count)
-    print(url)
-    
-    thread_sun_sun = threading.Thread(target=VehicleDataManagerMex().addCar, args=[vehicle], daemon=True)
-    thread_sun_sun.start()
-    thread_sun_sun.join()
+    if vehicle["year"] == None:
+        return
 
+    # Insert vehicle in database
+    VehicleDataManagerMex().addCar(vehicle)
+    
 
 # Get car url
 def get_car_url(key, value):
@@ -121,21 +123,17 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            global count_url
-            count_url += 1
-            print("Veces que me itero: " + str(count_url))
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
-            thread_sun_sun.start()
-            thread_sun_sun.join()
+            workers.submit(get_car_information, car_url)
             
 # Main Function
 def mainmex(days):
     global days_limit
     days_limit = days
 
-    config_url_and_count, total_vehicles = get_config_url(soup)
+    config_url_and_count = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
     
+    print("Yo me ejecuto al final del todo")
