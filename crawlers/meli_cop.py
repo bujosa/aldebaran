@@ -7,11 +7,7 @@ from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
-# import logging
 from concurrent.futures import ThreadPoolExecutor
-
-# Set Logging
-# logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s')
 
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
@@ -126,13 +122,7 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            global global_count
-            global_count += 1
-
-            print("Veces que me itero: " + str(global_count))
-
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-
             workers.submit(get_car_information, car_url)
 
 # Main Function
