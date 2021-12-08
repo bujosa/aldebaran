@@ -2,21 +2,24 @@ from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 from datetime import timedelta
-import threading
 from database.mongo_dom import VehicleDataManagerDom
 from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_dop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
+from concurrent.futures import ThreadPoolExecutor
 
 # Request to mercado mercado libre RD
 response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_FiltersAvailableSidebar?filter=VEHICLE_YEAR')
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-count = 0
-count_url = 0
+global_count = 0
 days_limit = 7
+total_vehicles = 0
+
+# Create ThreadPoolExecutor
+workers = ThreadPoolExecutor(max_workers=80)
 
 # Get car information
 def get_car_information(url):
@@ -90,14 +93,9 @@ def get_car_information(url):
        "postCreatedAt":  (datetime.now() - timedelta(days=days)).isoformat(),
     }
 
-    global count
-    count += 1
-    print(count)
-    print(url)
-
-    thread_sun_sun = threading.Thread(target=VehicleDataManagerDom().addCar, args=[vehicle], daemon=True)
-    thread_sun_sun.start()
-    thread_sun_sun.join()
+    # Insert vehicle in database
+    VehicleDataManagerDom().addCar(vehicle)
+    
 
 # Extract vehicle url 
 def get_car_url(key, value):
@@ -121,21 +119,23 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            global count_url
-            count_url += 1
-            print("Veces que me itero: " + str(count_url))
+            global global_count
+            global_count += 1
+
+            print("Veces que me itero: " + str(global_count))
+
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
-            thread_son = threading.Thread(target=get_car_information, args=[car_url], daemon=True)
-            thread_son.start()
-            thread_son.join()
+            workers.submit(get_car_information, car_url)
 
 # Main Function
 def maindom(days):
     global days_limit
     days_limit = days
+    global total_vehicles
 
-    config_url_and_count = get_config_url(soup)
+    config_url_and_count, total_vehicles = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
     
+    print("Yo me ejecuto al final del todo")
