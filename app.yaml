@@ -10,15 +10,7 @@ handlers:
 
 basic_scaling: 
   max_instances: 2
-  idle_timeout: 60m
-
-# automatic_scaling:
-#   target_cpu_utilization: 0.95
-#   min_instances: 0
-#   max_instances: 10
-#   min_pending_latency: 30ms
-#   max_pending_latency: automatic
-#   max_concurrent_requests: 80
+  idle_timeout: 20m
 
 env_variables:
     SECRET_KEY: open2020
