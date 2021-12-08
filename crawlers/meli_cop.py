@@ -7,9 +7,8 @@ from shared.picture.picture import get_gallery_pictures
 from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
-import threading
-import time
 import logging
+from concurrent.futures import ThreadPoolExecutor
 
 # Set Logging
 logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s')
@@ -23,6 +22,9 @@ count = 0
 global_count = 0
 days_limit = 7
 total_vehicles = 0
+
+# Create ThreadPoolExecutor
+workers = ThreadPoolExecutor(max_workers=80)
 
 # Get car information
 def get_car_information(url):
@@ -98,14 +100,8 @@ def get_car_information(url):
     if vehicle["year"] == None:
         return
 
-    # global count
-    # count += 1
-    # print(count)
-    
-    thread_sun_sun = threading.Thread(target=VehicleDataManagerCop().addCar, args=[vehicle])
-    thread_sun_sun.start()
-    thread_sun_sun.join()
-    thread_sun_sun.is_alive()
+    VehicleDataManagerCop().addCar(vehicle)
+
     
 # Get car url
 def get_car_url(key, value):
@@ -135,10 +131,11 @@ def get_car_url(key, value):
             print("Veces que me itero: " + str(global_count))
 
             car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
-        
-            thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url]).start()
+
+            workers.submit(get_car_information, car_url)
+
+            # thread_sun_sun = threading.Thread(target=get_car_information, args=[car_url]).start()
            
-            
             # print("Threading active_count", threading.active_count())
             # while(threading.active_count() > 80):
             #     print("Waiting for the workers to finish")
@@ -157,10 +154,8 @@ def maincop(days):
     config_url_and_count, total_vehicles = get_config_url(soup)
 
     for key in config_url_and_count:
-        thread_son = threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]])
-        thread_son.start()
-        thread_son.join()
-        thread_son.is_alive()
+        get_car_url(key, config_url_and_count[key])
+        # threading.Thread(target=get_car_url, args=[key, config_url_and_count[key]])
         
     # while(threading.active_count() > 80):
     #             print("Waiting for the workers to finish")
