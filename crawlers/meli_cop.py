@@ -18,12 +18,10 @@ response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailable
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-global_count = 0
 days_limit = 7
-total_vehicles = 0
 
 # Create ThreadPoolExecutor
-workers = ThreadPoolExecutor(max_workers=80)
+workers = ThreadPoolExecutor(max_workers=16)
 
 # Get car information
 def get_car_information(url):
@@ -60,12 +58,16 @@ def get_car_information(url):
     # brand and model validation
     replace_text = "Imagen 1 de " + str(len_pictures) + " de "
     title = picture_section.get("alt").replace(replace_text, "").replace("  ", " ")
+    
     brand = title.split(" ")[0]
     model = get_model(data_sheet_table, title, brand)
+
     if key_error(data_sheet_table, "brand") != None:
             brand = key_error(data_sheet_table, "brand")
+
     if key_error(data_sheet_table, "model") != None:
         model = key_error(data_sheet_table, "model")
+
     if brand == None or model == None or model == "":
         return
     # end brand and model validation
@@ -99,6 +101,7 @@ def get_car_information(url):
     if vehicle["year"] == None:
         return
 
+    # Insert vehicle in database
     VehicleDataManagerCop().addCar(vehicle)
 
 # Get car url
@@ -132,19 +135,14 @@ def get_car_url(key, value):
 
             workers.submit(get_car_information, car_url)
 
-
 # Main Function
 def maincop(days):
     global days_limit
     days_limit = days
-    global total_vehicles
-    config_url_and_count, total_vehicles = get_config_url(soup)
+
+    config_url_and_count = get_config_url(soup)
 
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
         
     print("Yo me ejecuto al final del todo")
-    # while(threading.active_count() > 80):
-    #             print("Waiting for the workers to finish")
-    #             time.sleep(5) 
-    
