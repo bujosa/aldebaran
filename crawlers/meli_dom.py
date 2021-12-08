@@ -19,7 +19,7 @@ days_limit = 7
 total_vehicles = 0
 
 # Create ThreadPoolExecutor
-workers = ThreadPoolExecutor(max_workers=80)
+workers = ThreadPoolExecutor(max_workers=16)
 
 # Get car information
 def get_car_information(url):
