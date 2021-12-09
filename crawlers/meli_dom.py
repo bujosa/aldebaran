@@ -14,7 +14,7 @@ response = requests.get('https://carros.mercadolibre.com.do/autos-camionetas/_Fi
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-days_limit = 7
+days_limit = 15
 
 # Create ThreadPoolExecutor
 workers = ThreadPoolExecutor(max_workers=8)

@@ -8,16 +8,20 @@ from shared.prices.price import price_section_cop
 from shared.seller.seller import get_seller, get_seller_type
 from shared.utilities import data_sheet, days_section, get_array_of_url, get_config_url, get_model, key_error, state_section
 from concurrent.futures import ThreadPoolExecutor
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] (%(threadName)-s) %(message)s' )
 
 # Request to mercado mercado libre co
 response = requests.get("https://carros.tucarro.com.co/directo/_FiltersAvailableSidebar?filter=VEHICLE_YEAR")
 mercadoLibre = response.text
 soup = BeautifulSoup(mercadoLibre, "html.parser")
 
-days_limit = 7
+days_limit = 15
 
 # Create ThreadPoolExecutor
 workers = ThreadPoolExecutor(max_workers=8)
+count = 0
 
 # Get car information
 def get_car_information(url):
@@ -100,6 +104,10 @@ def get_car_information(url):
     # Insert vehicle in database
     VehicleDataManagerCop().addCar(vehicle)
 
+    global count
+    count += 1
+    logging.info("Car added: " + str(count))
+
 # Get car url
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
@@ -135,4 +143,3 @@ def maincop(days):
     for key in config_url_and_count:
         get_car_url(key, config_url_and_count[key])
         
-    print("Yo me ejecuto al final del todo")
