@@ -24,9 +24,9 @@ body {
 
 /* Create three equal columns that floats next to each other */
 .column {
-  float: left;
+  float: center;
   width: 33.33%;
-  padding: 5px;
+  padding: 4px;
 }
 
 /* Clear floats after the columns */
