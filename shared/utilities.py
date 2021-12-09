@@ -94,7 +94,7 @@ def get_config_url(soup):
     for config in config_div:
         key = config.get("href")
         value_tmp = config.find("span", class_="ui-search-search-modal-filter-match-count").text
-        value = int(value_tmp.replace("(","").replace(")","").replace(",",""))
+        value = int(value_tmp.replace("(","").replace(")","").replace(",","").replace(".",""))
         
         url = convert_url(key)
 
