@@ -100,7 +100,6 @@ def get_car_information(url):
     # Insert vehicle in database
     VehicleDataManagerDom().addCar(vehicle)
     
-
 # Extract vehicle url 
 def get_car_url(key, value):
     year_specific_urls = get_array_of_url(key, value)
