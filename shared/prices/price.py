@@ -13,7 +13,7 @@ def price_section_dop(soup):
     tmp = get_key(keys[1])
 
     currency = "DOP"
-    
+
     if tmp == "dólares":
         currency = "USD"
 
@@ -30,7 +30,7 @@ def price_section_dop(soup):
     return price, currency
 
 def price_section_mex(soup):
-    price_section = soup.find("span", class_="price-tag-fraction")
+    price_section = soup.find("span", class_="andes-money-amount__fraction")
 
     if price_section == None:
         return None
@@ -39,7 +39,7 @@ def price_section_mex(soup):
     return price
 
 def price_section_cop(soup):
-    price_section = soup.find("span", class_="price-tag-fraction")
+    price_section = soup.find("span", class_="andes-money-amount__fraction")
 
     if price_section == None:
         return None
