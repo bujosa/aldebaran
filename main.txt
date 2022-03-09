@@ -1,0 +1,6 @@
+from crawlers.meli_cop import maincop
+from dotenv import load_dotenv
+
+load_dotenv()
+
+maincop(365)
