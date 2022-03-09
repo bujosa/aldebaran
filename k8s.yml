@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mercadolibre-service
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - name: "mercadolibre-service"
+    port: 5000
+  selector:
+    app: mercadolibre-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mercadolibre-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mercadolibre-service
+  template:
+    metadata:
+      labels:
+        app: mercadolibre-service
+    spec:
+      containers:
+      - image: bujosa/mercado-libre-scripts
+        name: mercadolibre-service
+        envFrom:
+        - secretRef: 
+            name: mercado-libre-env
+
