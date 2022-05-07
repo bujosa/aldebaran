@@ -2,7 +2,7 @@
 from shared.utilities import get_key
 
 def price_section_dop(soup):
-    price_section = soup.find("span", class_="price-tag-text-sr-only")
+    price_section = soup.find("span", class_="andes-visually-hidden")
 
     if price_section == None:
         return None
@@ -10,7 +10,13 @@ def price_section_dop(soup):
     keys = price_section.text.split(" ")
     
     price = int(keys[0])
-    currency = get_key(keys[1])
+    tmp = get_key(keys[1])
+
+    currency = "DOP"
+
+    if tmp == "dólares":
+        currency = "USD"
+
     
     if price > 200 and price < 999:
         return price*1000, "DOP"
@@ -24,7 +30,7 @@ def price_section_dop(soup):
     return price, currency
 
 def price_section_mex(soup):
-    price_section = soup.find("span", class_="price-tag-fraction")
+    price_section = soup.find("span", class_="andes-money-amount__fraction")
 
     if price_section == None:
         return None
@@ -33,7 +39,7 @@ def price_section_mex(soup):
     return price
 
 def price_section_cop(soup):
-    price_section = soup.find("span", class_="price-tag-fraction")
+    price_section = soup.find("span", class_="andes-money-amount__fraction")
 
     if price_section == None:
         return None
