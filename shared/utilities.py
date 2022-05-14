@@ -74,7 +74,7 @@ def get_array_of_url(url, value):
     if count < 1 or value == max_vehicle_per_page: 
         return array_of_url
     else:
-        count = math.floor(count)
+        count = math.floor(count)   
         for x in range(count+1):
             number = str(x*max_vehicle_per_page + 1)
             last_part_tmp = url+last_part+number
@@ -93,15 +93,8 @@ def get_config_url(soup):
 
     for config in config_div:
         key = config.get("href")
-        value_tmp = config.find("span", class_="ui-search-search-modal-filter-match-count").text
-        value = int(value_tmp.replace("(","").replace(")","").replace(",","").replace(".",""))
-        
         url = convert_url(key)
-
-        if value > limit_car_per_config:
-            value = limit_car_per_config
-
-        config_href[url] = value
+        config_href[url] = limit_car_per_config
 
     return config_href
 
@@ -122,3 +115,6 @@ def get_model(dict, title, brand):
       return model.split()[0]
   except: 
       return model 
+
+def get_count():
+    return limit_car_per_config
