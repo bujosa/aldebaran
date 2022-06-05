@@ -17,7 +17,7 @@ soup = BeautifulSoup(mercadoLibre, "html.parser")
 days_limit = 15 
 
 # Create ThreadPoolExecutor
-workers = ThreadPoolExecutor(max_workers=8)
+workers = ThreadPoolExecutor(max_workers=1)
 
 # Get car information
 def get_car_information(url):
@@ -49,6 +49,11 @@ def get_car_information(url):
       return
     # end days_section validation
 
+    # seller type validation
+    seller_type = get_seller_type(soup)
+    if seller_type != "Particular":
+        return
+
     data_sheet_table = data_sheet(soup)
     
     # brand and model validation
@@ -76,7 +81,7 @@ def get_car_information(url):
        "originalPrice": price,
        "currency": 'MXN',
        "mainPicture": pictures[0],
-       "pictures": pictures[1:],
+    #    "pictures": pictures[1:],
        "year": key_error(data_sheet_table, "year"),
        "fuelType": key_error(data_sheet_table, "fuelType"),
        "bodyStyle": key_error(data_sheet_table, "bodyStyle"),
@@ -108,7 +113,7 @@ def get_car_url(key, value):
         response = requests.get(specific_page)
         car_page = response.text
         soup = BeautifulSoup(car_page, "html.parser")
-
+                                            
         validator = soup.find("svg", class_="ui-search-icon ui-search-icon--not-found ui-search-rescue__icon")
         
         if validator != None:
@@ -136,3 +141,4 @@ def mainmex(days):
         get_car_url(key, config_url_and_count[key])
     
     print("Yo me ejecuto al final del todo")
+
