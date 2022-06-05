@@ -17,7 +17,7 @@ soup = BeautifulSoup(mercadoLibre, "html.parser")
 days_limit = 15
 
 # Create ThreadPoolExecutor
-workers = ThreadPoolExecutor(max_workers=8)
+workers = ThreadPoolExecutor(max_workers=1)
 
 # Get car information
 def get_car_information(url):
