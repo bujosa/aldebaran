@@ -20,7 +20,7 @@ soup = BeautifulSoup(mercadoLibre, "html.parser")
 days_limit = 15
 
 # Create ThreadPoolExecutor
-workers = ThreadPoolExecutor(max_workers=8)
+workers = ThreadPoolExecutor(max_workers=1)
 count = 0
 
 # Get car information
@@ -130,7 +130,8 @@ def get_car_url(key, value):
             urls = urls.find_all("li", class_="ui-search-layout__item")
 
         for url in urls:
-            car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")            
+            car_url = url.find("a", class_="ui-search-result__content ui-search-link").get("href")
+            # get_car_information(car_url)            
             workers.submit(get_car_information, car_url)
 
 # Main Function
