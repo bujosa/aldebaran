@@ -5,3 +5,8 @@ This app is to use it to extract data using web scraping.
 
 ## Resources
 https://www.mercadolibre.com.mx/ - Mercado Libre
+
+## Countries
+- Dominican Republica
+- Mexico
+- Colombia
