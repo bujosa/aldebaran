@@ -81,7 +81,7 @@ def get_car_information(url):
        "originalPrice": price,
        "currency": 'MXN',
        "mainPicture": pictures[0],
-    #    "pictures": pictures[1:],
+       "pictures": pictures[1:],
        "year": key_error(data_sheet_table, "year"),
        "fuelType": key_error(data_sheet_table, "fuelType"),
        "bodyStyle": key_error(data_sheet_table, "bodyStyle"),
@@ -102,7 +102,6 @@ def get_car_information(url):
     if vehicle["year"] == None:
         return
 
-    # Insert vehicle in database
     VehicleDataManagerMex().addCar(vehicle)
     
 # Get car url

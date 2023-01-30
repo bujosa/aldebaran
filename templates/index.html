@@ -1,23 +1,44 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
 
-{% block content %}
-	
-    
-    <h1>Select your country:</h1>
+<h1>Select your country:</h1>
 
-    <div class="row">
-        <div class="column col-sm"><a href="{{ url_for('melidom')}}"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/RD.svg" width="100%" height="320" alt="Bandera de Republica Dominicana"></a></div>
-        <div class="column col-sm"><a href="{{ url_for('melicop')}}"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/COL.svg" width="100%" height="320" alt="Bandera de Colombia"></a></div>
-        <div class="column col-sm"><a href="{{ url_for('melimex')}}"><img src="https://curbo-assets.nyc3.cdn.digitaloceanspaces.com/flags/MEX.svg" width="100%" height="320" alt="Bandera de Mexico"></a></div>
-    </div>
+<div class="row">
+  <div class="column col-sm">
+    <a href="{{ url_for('melidom')}}"
+      ><img
+        src="../static/images/RD.svg"
+        width="100%"
+        height="320"
+        alt="Bandera de Republica Dominicana"
+    /></a>
+  </div>
+  <div class="column col-sm">
+    <a href="{{ url_for('melicop')}}"
+      ><img
+        src="../static/images/COL.svg"
+        width="100%"
+        height="320"
+        alt="Bandera de Colombia"
+    /></a>
+  </div>
+  <div class="column col-sm">
+    <a href="{{ url_for('melimex')}}"
+      ><img
+        src="../static/images/MEX.svg"
+        width="100%"
+        height="320"
+        alt="Bandera de Mexico"
+    /></a>
+  </div>
+</div>
 
-    <br/>
-    <br/>
-    
-    <b><h2><p id="time"></p></h2></b>
+<br />
+<br />
 
-    <script src="{{ url_for('static', filename='js/script.js')}}"></script>
+<b
+  ><h2><p id="time"></p></h2
+></b>
 
-    
+<script src="{{ url_for('static', filename='js/script.js')}}"></script>
+
 {% endblock %}
-

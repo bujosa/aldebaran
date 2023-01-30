@@ -2,7 +2,6 @@
 def get_gallery_pictures(soup):
     pictures = []
 
-    # try to get the pictures 
     try:                                                                
         gallery_pictures = soup.find("div", class_="ui-pdp-gallery__column").find_all("figure", class_="ui-pdp-gallery__figure")
 

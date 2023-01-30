@@ -2,11 +2,11 @@ apiVersion: skaffold/v1beta14
 kind: Config
 build:
   artifacts:
-  - image: bujosa/mercado-libre-scripts
-    context: .
+    - image: bujosa/mercado-libre-scripts
+      context: .
   local:
     push: true
 deploy:
   kubectl:
     manifests:
-    - k8s.yml
+      - k8s.yml
