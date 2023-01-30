@@ -130,3 +130,5 @@ dmypy.json
 
 #Json files
 *.json
+
+sensitive-data.txt

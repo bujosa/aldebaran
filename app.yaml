@@ -1,0 +1,21 @@
+runtime: python37
+entrypoint: gunicorn -b :$PORT -w 8 main:app
+
+instance_class: B8
+
+handlers:
+  # This configures Google App Engine to serve the files in the app's static
+  # directory.
+  - url: /static
+    static_dir: static
+
+basic_scaling:
+  max_instances: 2
+  idle_timeout: 60m
+
+env_variables:
+  SECRET_KEY: YOUR_SECRET_KEY
+  MONGO_DB_URI: YOUR_MONGO_DB_URI
+  GOOGLE_CLOUD_PROJECT: YOUR_PROJECT_NAME
+  SUBSCRIPTION_NAME: YOUR_SUBSCRIPTION_NAME
+  PORT: 5000
